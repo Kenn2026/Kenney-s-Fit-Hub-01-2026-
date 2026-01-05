@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KENNEY’S FITNESS HUB | Professional Coaching</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Oswald:wght@500;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        h1, h2, h3, .brand-font { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 0.05em; }
+        .tab-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .tab-btn.active { background-color: #10b981; color: #000; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .accordion-content.open { max-height: 5000px; }
+        .chart-container { position: relative; width: 100%; height: 350px; }
+        input[type="number"] { background: #0f172a; border: 1px solid #334155; color: white; border-radius: 4px; padding: 2px 4px; }
+        .track-card { cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .track-card.active { border-color: #10b981; background: rgba(16, 185, 129, 0.15); transform: scale(1.02); }
+        .track-card:hover { border-color: #10b981; }
+    </style>
+</head>
+<body class="bg-slate-950">
+
+    <div class="min-h-screen pb-20">
+        <!-- TOP NAVBAR -->
+        <nav class="sticky top-0 z-50 bg-black/95 border-b border-emerald-500/30">
+            <div class="max-w-6xl mx-auto px-4 h-24 md:h-20 flex flex-col md:flex-row items-center justify-between gap-4 py-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center font-bold text-black italic text-xl">K</div>
+                    <span class="text-2xl font-bold tracking-tighter italic leading-none">KENNEY’S <span class="text-emerald-500">FITNESS HUB</span></span>
+                </div>
+                
+                <div class="flex bg-slate-800 p-1 rounded-full border border-slate-700">
+                    <button data-tab="dashboard" class="tab-btn active px-4 py-1.5 rounded-full text-xs font-bold uppercase">Goal</button>
+                    <button data-tab="training" class="tab-btn px-4 py-1.5 rounded-full text-xs font-bold uppercase">Training</button>
+                    <button data-tab="fuel" class="tab-btn px-4 py-1.5 rounded-full text-xs font-bold uppercase">Fuel</button>
+                    <button data-tab="metrics" class="tab-btn px-4 py-1.5 rounded-full text-xs font-bold uppercase">Metrics</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="max-w-5xl mx-auto px-4 mt-8">
+            
+            <!-- DASHBOARD -->
+            <section id="dashboard" class="tab-content space-y-8">
+                <div class="text-center">
+                    <h2 class="text-4xl font-bold mb-2">CHOOSE YOUR TRACK</h2>
+                    <p class="text-slate-400 italic">"Changing lives through fitness and longevity."</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="card-strength" class="track-card active glass-card p-8 rounded-3xl" onclick="setTrack('strength')">
+                        <div class="text-emerald-500 text-sm font-black mb-2 uppercase tracking-widest">Growth & Power</div>
+                        <h3 class="text-3xl font-bold mb-4">Strength & Hypertrophy</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">Mechanical tension focus. High protein surplus plan to maximize muscle protein synthesis.</p>
+                        <div class="flex items-center gap-4 text-xs font-bold text-emerald-500 uppercase">
+                            <span>Science: Surplus</span>
+                            <span>Target: 1g/lb Protein</span>
+                        </div>
+                    </div>
+
+                    <div id="card-weightloss" class="track-card glass-card p-8 rounded-3xl" onclick="setTrack('weightloss')">
+                        <div class="text-emerald-500 text-sm font-black mb-2 uppercase tracking-widest">Fat Loss & Longevity</div>
+                        <h3 class="text-3xl font-bold mb-4">Metabolic Weight Loss</h3>
+                        <p class="text-slate-400 text-sm mb-6 leading-relaxed">PHA training protocol to keep heart rate high and preserve muscle in a caloric deficit.</p>
+                        <div class="flex items-center gap-4 text-xs font-bold text-emerald-500 uppercase">
+                            <span>Science: Deficit</span>
+                            <span>Target: 1.2g/lb Protein</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRAINING -->
+            <section id="training" class="tab-content hidden space-y-6">
+                <div id="training-header" class="bg-emerald-500 text-black p-4 rounded-xl flex justify-between items-center shadow-lg">
+                    <div>
+                        <span class="text-[10px] font-black uppercase opacity-70">Program Focus:</span>
+                        <h3 id="current-track-name" class="font-bold text-xl leading-none">STRENGTH & HYPERTROPHY</h3>
+                    </div>
+                </div>
+
+                <div id="workout-engine" class="space-y-4"></div>
+            </section>
+
+            <!-- FUEL -->
+            <section id="fuel" class="tab-content hidden space-y-6">
+                <div class="glass-card p-8 rounded-2xl">
+                    <h2 class="text-3xl font-bold mb-6 italic">Performance <span class="text-emerald-500">Fueling</span></h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                        <div class="space-y-6">
+                            <p id="fuel-desc" class="text-sm text-slate-300 leading-relaxed bg-slate-800/50 p-4 rounded-lg border border-slate-700"></p>
+                            <div id="meal-plan" class="space-y-3"></div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-black/40 p-6 rounded-xl border border-slate-800">
+                                <h3 class="text-white font-bold mb-4 uppercase text-sm border-b border-emerald-500 pb-2">The HUB Standards</h3>
+                                <ul id="rules-list" class="space-y-4 text-sm text-slate-300"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- METRICS -->
+            <section id="metrics" class="tab-content hidden space-y-6">
+                <div class="glass-card p-8 rounded-2xl">
+                    <h2 class="text-3xl font-bold mb-6 text-center">Data Analytics</h2>
+                    <div class="max-w-xs mx-auto mb-8">
+                        <select id="metric-select" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-emerald-500 font-bold"></select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            currentTrack: 'strength',
+            userLogs: JSON.parse(localStorage.getItem('kenney_hub_v4_logs')) || {},
+            chart: null
+        };
+
+        const workouts = {
+            strength: {
+                name: "Strength & Hypertrophy",
+                science: "Novice Hypertrophy requires a slight caloric surplus (~250-500kcal) with a target of 1g protein per lb of BW. Blocks 1-2 build the foundation; Blocks 3-4 increase mechanical tension with heavier compound variations.",
+                meals: [
+                    { time: 'Breakfast', name: 'Power Start', detail: '80g Oats, 2 Scoops Whey, 15g Peanut Butter, 1 Banana' },
+                    { time: 'Lunch', name: 'Mass Builder Bowl', detail: '200g Lean Ground Beef (90/10), 200g Jasmine Rice, 100g Broccoli' },
+                    { time: 'Dinner', name: 'Muscle Recovery', detail: '200g Salmon Fillet, 250g Sweet Potato, Large Mixed Salad' },
+                    { time: 'Daily Snack', name: 'Protein Satiety', detail: '1 cup Greek Yogurt + 30g Almonds' }
+                ],
+                rules: ["1g Protein per lb of BW", "Surplus for recovery", "8 hours sleep minimum", "Progressive overload every session"],
+                blocks: [
+                    { title: "Weeks 1-2: Foundations", days: [
+                        { name: "Push Focus", ex: ["Barbell Bench Press", "Overhead Press", "Incline Dumbbell Press", "Dumbbell Lateral Raises", "Tricep Pushdowns", "Pushups"] },
+                        { name: "Pull Focus", ex: ["Barbell Deadlift", "Bent Over Barbell Rows", "Lat Pulldowns", "Face Pulls", "Dumbbell Curls", "Hammer Curls"] },
+                        { name: "Lower Focus", ex: ["Barbell Back Squat", "Leg Press", "Leg Extensions", "Leg Curls", "Calf Raises", "Plank"] },
+                        { name: "Upper Focus", ex: ["Dumbbell Bench Press", "Weighted Pullups", "Seated Row", "Military Press", "Dips", "Barbell Curls"] }
+                    ]},
+                    { title: "Weeks 3-4: Intensification", days: [
+                        { name: "Heavy Push", ex: ["Pause Bench Press", "Seated Dumbbell Press", "Weighted Dips", "Cable Lateral Raises", "Overhead Extension", "Deficit Pushups"] },
+                        { name: "Heavy Pull", ex: ["Sumo Deadlift", "Weighted Chin-ups", "Meadows Rows", "Rear Delt Flys", "Incline DB Curls", "Zottman Curls"] },
+                        { name: "Heavy Lower", ex: ["Pause Squats", "Romanian Deadlift", "Hack Squat", "Lying Leg Curls", "Donkey Calf Raises", "Weighted Planks"] },
+                        { name: "Upper Hypertrophy", ex: ["Incline Barbell Press", "Neutral Grip Pullups", "T-Bar Rows", "Arnold Press", "Skull Crushers", "Spider Curls"] }
+                    ]}
+                ]
+            },
+            weightloss: {
+                name: "Metabolic Weight Loss",
+                science: "Fat loss is achieved via a caloric deficit while protecting muscle with 1.2g protein per lb of BW. Blocks 1-2 focus on movement capacity; Blocks 3-4 introduce high-intensity finishers and increased exercise density.",
+                meals: [
+                    { time: 'Breakfast', name: 'Lean Metabolism', detail: '5 Egg Whites, 1 Whole Egg, 1/2 Avocado, Unlimited Spinach' },
+                    { time: 'Lunch', name: 'Metabolic Flush', detail: '200g Chicken Breast, 100g Brown Rice, Asparagus' },
+                    { time: 'Dinner', name: 'Clean Lean', detail: '200g White Fish (Cod/Tilapia), Large Green Salad, Zucchini' },
+                    { time: 'Daily Snack', name: 'The Hunger Guard', detail: '170g 0% Greek Yogurt + 10 Walnuts' }
+                ],
+                rules: ["1.2g Protein per lb of BW", "Deficit for fat loss", "Minimum 4L Water daily", "Keep training density high (short rest)"],
+                blocks: [
+                    { title: "Weeks 1-2: Metabolic Foundations", days: [
+                        { name: "PHA Circuit A", ex: ["Goblet Squats", "Dumbbell Press", "Step Ups", "Bent Over Rows", "Mountain Climbers", "Kettlebell Swings"] },
+                        { name: "PHA Circuit B", ex: ["Dumbbell Chest Press", "Single Arm Rows", "Walking Lunges", "Face Pulls", "Burpees", "Leg Raises"] },
+                        { name: "Lower Burn", ex: ["Sumo Squats", "Romanian Deadlift", "Leg Press", "Leg Curls", "Calf Raises", "Bicycle Crunches"] },
+                        { name: "Full Body Flush", ex: ["Dumbbell Thrusters", "Renegade Rows", "Jump Squats", "Plank Shoulder Taps", "Russian Twists", "Jump Rope"] }
+                    ]},
+                    { title: "Weeks 3-4: Metabolic Intensification", days: [
+                        { name: "PHA Advanced A", ex: ["Bulgarian Split Squats", "Landmine Press", "Box Jumps", "Lat Pulldowns", "Spiderman Pushups", "Snatch Grip Deadlift"] },
+                        { name: "PHA Advanced B", ex: ["Incline DB Press", "Weighted Pull-ups", "Walking Lunges", "TRX Rows", "Box Burpees", "V-Ups"] },
+                        { name: "Lower Density", ex: ["Front Squat", "Stiff Leg Deadlift", "Leg Press", "Single Leg Curls", "Single Leg Calf Raise", "Hanging Leg Raises"] },
+                        { name: "Total Body Chaos", ex: ["Dumbbell Clean & Press", "Inverted Rows", "Sled Push", "Battle Ropes", "Wall Sits", "Bear Crawls"] }
+                    ]}
+                ]
+            }
+        };
+
+        const yt = (e) => `https://www.youtube.com/results?search_query=${encodeURIComponent(e + ' proper form exercise demonstration')}`;
+
+        function setTrack(track) {
+            state.currentTrack = track;
+            document.querySelectorAll('.track-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`card-${track}`).classList.add('active');
+            document.getElementById('current-track-name').innerText = workouts[track].name;
+            renderTraining();
+            renderFuel();
+        }
+
+        function renderTraining() {
+            const track = workouts[state.currentTrack];
+            let html = '';
+            
+            for(let i=0; i<4; i++) {
+                const blockIndex = i < 2 ? 0 : 1; // Block 1 & 2 use index 0, Block 3 & 4 use index 1
+                const block = track.blocks[blockIndex];
+                const weekNum = i + 1;
+                
+                html += `
+                <div class="glass-card rounded-2xl overflow-hidden border-l-4 border-l-emerald-500">
+                    <button class="w-full p-6 flex justify-between items-center bg-slate-800/20 hover:bg-slate-800/40 transition" onclick="toggleAcc('w${weekNum}')">
+                        <span class="text-xl font-bold uppercase italic">WEEK 0${weekNum}: ${block.title}</span>
+                        <span class="text-emerald-500 font-black">+</span>
+                    </button>
+                    <div id="w${weekNum}" class="accordion-content">
+                        <div class="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            ${block.days.map((day, dIdx) => `
+                                <div class="bg-black/60 p-4 rounded-xl border border-slate-800">
+                                    <h4 class="text-emerald-500 font-bold mb-4 uppercase text-xs tracking-widest border-b border-emerald-500/20 pb-2">Training Day ${dIdx+1}: ${day.name}</h4>
+                                    <div class="space-y-4">
+                                        ${day.ex.map(e => `
+                                            <div class="border-b border-slate-800 pb-3 last:border-0">
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <span class="text-sm font-bold text-white">${e}</span>
+                                                    <a href="${yt(e)}" target="_blank" class="text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 px-2 py-0.5 rounded-full hover:bg-emerald-500 transition">Video Demo</a>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <input type="number" id="w${weekNum}d${dIdx}-${e}-w" placeholder="LBS" class="w-full text-xs">
+                                                    <input type="number" id="w${weekNum}d${dIdx}-${e}-r" placeholder="REPS" class="w-full text-xs">
+                                                    <button onclick="logData('${e}', 'w${weekNum}d${dIdx}-${e}')" class="bg-emerald-500 text-black px-3 py-1 rounded text-[10px] font-black uppercase">Log</button>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            }
+            document.getElementById('workout-engine').innerHTML = html;
+        }
+
+        function renderFuel() {
+            const data = workouts[state.currentTrack];
+            document.getElementById('fuel-desc').innerText = data.science;
+            document.getElementById('meal-plan').innerHTML = data.meals.map(m => `
+                <div class="p-4 bg-slate-800/80 rounded-xl border border-slate-700">
+                    <span class="text-emerald-500 font-black text-[10px] uppercase">${m.time}</span>
+                    <p class="font-bold text-white">${m.name}</p>
+                    <p class="text-xs text-slate-400 mt-1 italic">${m.detail}</p>
+                </div>
+            `).join('');
+            document.getElementById('rules-list').innerHTML = data.rules.map(r => `
+                <li class="flex items-start gap-2">
+                    <div class="mt-1 w-1.5 h-1.5 bg-emerald-500 rounded-full flex-shrink-0"></div>
+                    <span>${r}</span>
+                </li>
+            `).join('');
+        }
+
+        window.toggleAcc = (id) => {
+            const el = document.getElementById(id);
+            const isOpen = el.classList.contains('open');
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+            if(!isOpen) el.classList.add('open');
+        };
+
+        window.logData = (ex, id) => {
+            const w = document.getElementById(`${id}-w`).value;
+            const r = document.getElementById(`${id}-r`).value;
+            if(!w || !r) return;
+            if(!state.userLogs[ex]) state.userLogs[ex] = [];
+            state.userLogs[ex].push({ date: new Date().toLocaleDateString(), weight: parseFloat(w), reps: parseInt(r) });
+            localStorage.setItem('kenney_hub_v4_logs', JSON.stringify(state.userLogs));
+            alert('Progress Logged!');
+        };
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(btn.dataset.tab).classList.remove('hidden');
+                if(btn.dataset.tab === 'metrics') renderChart();
+            };
+        });
+
+        function renderChart() {
+            const select = document.getElementById('metric-select');
+            const keys = Object.keys(state.userLogs);
+            if(keys.length === 0) return;
+            select.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+            select.onchange = () => {
+                const history = state.userLogs[select.value];
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                if(state.chart) state.chart.destroy();
+                state.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: history.map(h => h.date),
+                        datasets: [{ label: 'Weight (LBS)', data: history.map(h => h.weight), borderColor: '#10b981', tension: 0.3, fill: true, backgroundColor: 'rgba(16,185,129,0.1)' }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            };
+            select.dispatchEvent(new Event('change'));
+        }
+
+        window.onload = () => { setTrack('strength'); };
+    </script>
+</body>
+</html>
